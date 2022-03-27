@@ -29,8 +29,8 @@ namespace SERP
 		void change_position(const std::string& employee_name, const std::string& new_position, const std::string& division_name = "");
 		void dismiss_employee(const std::string& employee_name, const std::string& division_name = "");
 		const Employee* find_employee(const std::string& employee_name, const std::string& division_name = "") const;
-		std::vector<std::string> get_divisions() const;
-		std::vector<std::string> get_employees(const std::string& division_name) const;
+		std::vector<const Division*> get_divisions() const;
+		std::vector<const Employee*> get_employees(const std::string& division_name) const;
 	private:
 		using div_member_t = member<Division, const std::string, &Division::name>;
 		using div_container_t = multi_index_container<Division, indexed_by<hashed_unique<div_member_t>>>;

@@ -15,6 +15,8 @@ namespace SERP
             {
                 Employee e(
                     emp.second.get_child("name").data(),
+                    emp.second.get_child("middleName").data(),
+                    emp.second.get_child("surname").data(),
                     emp.second.get_child("function").data(),
                     salary_t(::atof(emp.second.get_child("salary").data().c_str()))
                 );
@@ -26,19 +28,21 @@ namespace SERP
 	void TManager::save(const std::string& filename)
 	{
         pt::ptree tree;
-        for (auto& dep_name : get_divisions())
+        for (const Division* dep : get_divisions())
         {
             pt::ptree tdep;
-            for (auto& emp_name : get_employees(dep_name))
+            for (const Employee* emp : get_employees(dep->name))
             {
                 pt::ptree edep;
-                const Employee* emp = find_employee(emp_name, dep_name);
-                edep.add("name", emp->name);
+                const Employee* emp = find_employee(emp->name, dep->name);
+                edep.add("surname", emp->last_name());
+                edep.add("name", emp->first_name());
+                edep.add("middleName", emp->middle_name());
                 edep.add("function", emp->position);
                 edep.add("salary", emp->salary);
                 tdep.add_child("employments.employment", edep);
             }
-            tdep.add("<xmlattr>.name", dep_name);
+            tdep.add("<xmlattr>.name", dep->name);
             tree.add_child("departments.department", tdep);
         }
         pt::write_xml(filename, tree, std::locale(),

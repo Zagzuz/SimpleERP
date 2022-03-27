@@ -91,24 +91,24 @@ namespace SERP
 		return &*it;
 	}
 
-	std::vector<std::string> Manager::get_divisions() const
+	std::vector<const Division*> Manager::get_divisions() const
 	{
-		std::vector<std::string> names;
+		std::vector<const Division*> names;
 		std::transform(divisions_.begin(), divisions_.end(),
-			std::back_inserter(names), [](const Division& d) { return d.name; });
+			std::back_inserter(names), [](const Division* d) { return &d; });
 		return names;
 	}
 
-	std::vector<std::string> Manager::get_employees(const std::string& division_name) const
+	std::vector<const Employee*> Manager::get_employees(const std::string& division_name) const
 	{
 		auto it = divisions_.find(division_name);
 		if (it == divisions_.end())
 		{
 			// division not found
 		}
-		std::vector<std::string> names;
+		std::vector<const Employee*> names;
 		std::transform(it->employees.begin(), it->employees.end(),
-			std::back_inserter(names), [](const Employee& e) { return e.name; });
+			std::back_inserter(names), [](const Employee& e) { return &e; });
 		return names;
 	}
 
