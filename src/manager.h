@@ -52,7 +52,7 @@ namespace SERP
 
 		DivEmpIt find_employee_it(const std::string& employee_name, const std::string& division_name = "") const;
 		template <class Callable> void modify_employee(div_it_t div_it, emp_it_t emp_it, Callable mod);
-
+	protected:
 		div_container_t divisions_;
 	};
 	

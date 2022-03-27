@@ -28,21 +28,20 @@ namespace SERP
 	void TManager::save(const std::string& filename)
 	{
         pt::ptree tree;
-        for (const Division* dep : get_divisions())
+        for (const Division& dep : divisions_)
         {
             pt::ptree tdep;
-            for (const Employee* emp : get_employees(dep->name))
+            for (const Employee& emp : dep.employees)
             {
                 pt::ptree edep;
-                const Employee* emp = find_employee(emp->name, dep->name);
-                edep.add("surname", emp->last_name());
-                edep.add("name", emp->first_name());
-                edep.add("middleName", emp->middle_name());
-                edep.add("function", emp->position);
-                edep.add("salary", emp->salary);
+                edep.add("surname", emp.last_name());
+                edep.add("name", emp.first_name());
+                edep.add("middleName", emp.middle_name());
+                edep.add("function", emp.position);
+                edep.add("salary", emp.salary);
                 tdep.add_child("employments.employment", edep);
             }
-            tdep.add("<xmlattr>.name", dep->name);
+            tdep.add("<xmlattr>.name", dep.name);
             tree.add_child("departments.department", tdep);
         }
         pt::write_xml(filename, tree, std::locale(),

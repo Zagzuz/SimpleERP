@@ -95,7 +95,7 @@ namespace SERP
 	{
 		std::vector<const Division*> names;
 		std::transform(divisions_.begin(), divisions_.end(),
-			std::back_inserter(names), [](const Division* d) { return &d; });
+			std::back_inserter(names), [](const Division& d) { return &d; });
 		return names;
 	}
 
