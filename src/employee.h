@@ -4,8 +4,6 @@
 #include <string>
 
 
-struct Division;
-
 namespace SERP
 {
 	struct Employee
