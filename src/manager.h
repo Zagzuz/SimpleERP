@@ -29,6 +29,7 @@ namespace SERP
 		void change_position(const std::string& employee_name, const std::string& new_position, const std::string& division_name = "");
 		void dismiss_employee(const std::string& employee_name, const std::string& division_name = "");
 		const Employee* find_employee(const std::string& employee_name, const std::string& division_name = "") const;
+		const Division* find_division(const std::string& division_name) const;
 		std::vector<const Division*> get_divisions() const;
 		std::vector<const Employee*> get_employees(const std::string& division_name) const;
 	private:

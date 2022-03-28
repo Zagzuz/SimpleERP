@@ -91,6 +91,12 @@ namespace SERP
 		return &*it;
 	}
 
+	const Division* Manager::find_division(const std::string& division_name) const
+	{
+		auto it = divisions_.find(division_name);
+		return it == divisions_.end() ? &*it : nullptr;
+	}
+
 	std::vector<const Division*> Manager::get_divisions() const
 	{
 		std::vector<const Division*> names;
