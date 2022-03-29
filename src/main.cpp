@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "tmanager.h"
+#include "manager.h"
 
 
 int main(int* argc, char** argv)
 {
-	SERP::TManager m;
+	SERP::Manager m;
 	m.create_division("main");
 	m.add_employee("main", { "Andre", "Manager", 1000 });
 	m.change_position("Andre", "SEO Manager", "main");
@@ -13,7 +13,7 @@ int main(int* argc, char** argv)
 	if (e) std::cout << e->salary;
 	//m.save("some_data.xml");
 
-	SERP::TManager tm;
+	SERP::Manager tm;
 	tm.load("data.xml");
 	tm.save_state();
 	tm.create_division("SEO");

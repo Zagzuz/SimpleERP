@@ -3,133 +3,100 @@
 
 namespace SERP
 {
-	void Manager::create_division(const std::string& name)
-	{
-		divisions_.emplace(name);
-	}
+    Manager::Manager(std::size_t new_capacity) : Stateful(new_capacity) {}
 
-	void Manager::delete_division(const std::string& name)
-	{
-		divisions_.erase(name);
-	}
-	
-	void Manager::add_employee(const std::string& division_name, const Employee& e)
-	{
-		auto div_it = divisions_.find(division_name);
-		if (div_it == divisions_.end())
-		{
-			// division not found
-			return;
-		}
-		divisions_.modify(div_it,
-			[&e](Division& d) {
-				d.employees.insert(e);
-				d.count_employees();
-				d.calculate_avg_salary();
-			}
-		);
-	}
+    void Manager::add(const std::string& filename)
+    {
+        pt::ptree tree;
+        pt::read_xml(filename, tree);
+        load_tree(tree);
+    }
 
-	void Manager::change_salary(const std::string& employee_name, salary_t new_salary, const std::string& division_name)
-	{
-		auto res = find_employee_it(employee_name, division_name);
-		if (!res.is_valid())
-		{
-			// either division or employee not found
-			return;
-		}
-		modify_employee(res.div_it, res.emp_it,
-			[&new_salary](Employee& e) { e.salary = new_salary; }
-		);
-		divisions_.modify(res.div_it, [](Division& d) {
-			d.calculate_avg_salary(); }
-		);
-	}
+    void Manager::load(const std::string& filename)
+    {
+        dissolve_divisions();
+        add(filename);
+    }
 
-	void Manager::change_position(const std::string& employee_name, const std::string& new_position, const std::string& division_name)
-	{
-		auto res = find_employee_it(employee_name, division_name);
-		if (!res.is_valid())
-		{
-			// either division or employee not found
-			return;
-		}
-		modify_employee(res.div_it, res.emp_it,
-			[&new_position](Employee& e) { e.position = new_position; }
-		);
-	}
+    void Manager::save(const std::string& filename, std::size_t indent_count)
+    {
+        pt::write_xml(filename, make_tree(), std::locale(),
+            pt::xml_writer_make_settings<std::string>(' ', indent_count));
+    }
 
-	void Manager::dismiss_employee(const std::string& employee_name, const std::string& division_name)
-	{
-		auto res = find_employee_it(employee_name, division_name);
-		if (!res.is_valid())
-		{
-			// either division or employee not found
-			return;
-		}
-		divisions_.modify(res.div_it,
-			[&](Division& d) {
-				d.employees.erase(res.emp_it);
-				d.count_employees();
-				d.calculate_avg_salary();
-			}
-		);
-	}
+    void Manager::save_state()
+    {
+        if (!get_state_capacity()) return;
+        if (states_.size() == get_state_capacity())
+        {
+            states_.pop_front();
+        }
+        if (cur_state_ + 1 < states_.size())
+        {
+            states_.erase(
+                std::next(states_.begin(), cur_state_ + 1),
+                states_.end()
+            );
+        }
+        std::ostringstream oss;
+        pt::write_xml(oss, make_tree());
+        states_.push_back(oss.str());
+        cur_state_ = states_.size() - 1;
+    }
 
-	const Employee* Manager::find_employee(const std::string& employee_name, const std::string& division_name) const
-	{
-		auto div_it = !division_name.empty() ?
-			// O(1) with hint
-			divisions_.find(division_name) :
-			// O(N) without hint
-			std::find_if(divisions_.cbegin(), divisions_.cend(),
-				[employee_name](const Division& d) {
-					return d.employees.contains(employee_name); });
-		if (div_it == divisions_.end()) return nullptr;
-		auto it = div_it->employees.find(employee_name);
-		if (it == div_it->employees.end()) return nullptr;
-		return &*it;
-	}
+    void Manager::load_state(std::size_t index)
+    {
+        pt::ptree t;
+        std::istringstream iss(states_[index]);
+        pt::read_xml(iss, t);
+        dissolve_divisions();
+        load_tree(t);
+    }
 
-	const Division* Manager::find_division(const std::string& division_name) const
-	{
-		auto it = divisions_.find(division_name);
-		return it == divisions_.end() ? &*it : nullptr;
-	}
+    void Manager::dissolve_divisions()
+    {
+        divisions_.clear();
+    }
 
-	std::vector<const Division*> Manager::get_divisions() const
-	{
-		std::vector<const Division*> names;
-		std::transform(divisions_.begin(), divisions_.end(),
-			std::back_inserter(names), [](const Division& d) { return &d; });
-		return names;
-	}
+    void Manager::load_tree(const pt::ptree& t)
+    {
+        for (auto& dep : t.get_child("departments"))
+        {
+            auto div_name = dep.second.get<std::string>("<xmlattr>.name");
+            create_division(div_name);
+            for (auto& emp : dep.second.get_child("employments"))
+            {
+                Employee e(
+                    emp.second.get_child("name").data(),
+                    emp.second.get_child("middleName").data(),
+                    emp.second.get_child("surname").data(),
+                    emp.second.get_child("function").data(),
+                    salary_t(::atof(emp.second.get_child("salary").data().c_str()))
+                );
+                add_employee(div_name, e);
+            }
+        }
+    }
 
-	std::vector<const Employee*> Manager::get_employees(const std::string& division_name) const
-	{
-		auto it = divisions_.find(division_name);
-		if (it == divisions_.end())
-		{
-			// division not found
-		}
-		std::vector<const Employee*> names;
-		std::transform(it->employees.begin(), it->employees.end(),
-			std::back_inserter(names), [](const Employee& e) { return &e; });
-		return names;
-	}
-
-	Manager::DivEmpIt Manager::find_employee_it(const std::string& employee_name, const std::string& division_name) const
-	{
-		auto div_it = !division_name.empty() ?
-			// O(1) with hint
-			divisions_.find(division_name) :
-			// O(N) without hint
-			std::find_if(divisions_.cbegin(), divisions_.cend(),
-				[employee_name](const Division& d) {
-					return d.employees.contains(employee_name); });
-		if (div_it == divisions_.end()) return DivEmpIt::invalid();
-		auto it = div_it->employees.find(employee_name);
-		if (it == div_it->employees.end()) return DivEmpIt::invalid();
-		return { div_it, it };
-	}
+    pt::ptree Manager::make_tree() const
+    {
+        pt::ptree t;
+        for (const Division& dep : divisions_)
+        {
+            pt::ptree tdep;
+            for (const Employee& emp : dep.employees)
+            {
+                pt::ptree edep;
+                edep.add("surname", emp.last_name());
+                edep.add("name", emp.first_name());
+                edep.add("middleName", emp.middle_name());
+                edep.add("function", emp.position);
+                edep.add("salary", emp.salary);
+                tdep.add_child("employments.employment", edep);
+            }
+            tdep.add("<xmlattr>.name", dep.name);
+            t.add_child("departments.department", tdep);
+        }
+        return t;
+    }
 } // namespace SERP
