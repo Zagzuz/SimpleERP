@@ -66,7 +66,7 @@ namespace SERP
             create_division(div_name);
             for (auto& emp : dep.second.get_child("employments"))
             {
-                Employee e(
+                base::Employee e(
                     emp.second.get_child("name").data(),
                     emp.second.get_child("middleName").data(),
                     emp.second.get_child("surname").data(),
@@ -81,10 +81,10 @@ namespace SERP
     pt::ptree Manager::make_tree() const
     {
         pt::ptree t;
-        for (const Division& dep : divisions_)
+        for (const base::Division& dep : divisions_)
         {
             pt::ptree tdep;
-            for (const Employee& emp : dep.employees)
+            for (const base::Employee& emp : dep.employees)
             {
                 pt::ptree edep;
                 edep.add("surname", emp.last_name());

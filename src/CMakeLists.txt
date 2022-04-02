@@ -1,15 +1,15 @@
-find_package(Boost 1.78 COMPONENTS serialization REQUIRED)
-link_directories(${PROJECT_SOURCE_DIR}/Boost/lib)
-include_directories(${Boost_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR})
+set($Boost_ROOT ${PROJECT_SOURCE_DIR}/Boost/lib/cmake)
+find_package(Boost 1.78 REQUIRED COMPONENTS serialization)
+include_directories(${Boost_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/nana/include)
+add_subdirectory(base)
+add_subdirectory(gui)
 add_executable(Main "main.cpp")
-add_library(Employee     STATIC "employee.cpp"     "employee.h")
-add_library(Division     STATIC "division.cpp"     "division.h")
-add_library(BasicManager STATIC "basicmanager.cpp" "basicmanager.h")
-add_library(Stateful     STATIC "stateful.cpp"     "stateful.h")
-add_library(Manager      STATIC "manager.cpp"      "manager.h")
+add_library(Manager STATIC "manager.cpp" "manager.h")
 target_link_libraries(Main PUBLIC Employee
-								  Division
-								  BasicManager
-								  Stateful
-								  Manager
-								  Boost::serialization)
+                                  Division
+                                  BasicManager
+                                  Stateful
+                                  Manager
+                                  TreeView
+                                  Boost::serialization
+                                  nana)

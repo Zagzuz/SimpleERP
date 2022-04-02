@@ -3,6 +3,6 @@
 out/
 CMakeSettings.json
 
-#Library
+#Libraries
 Boost/
-
+nana/

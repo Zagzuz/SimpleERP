@@ -1,7 +1,7 @@
 #include "employee.h"
 
 
-namespace SERP
+namespace SERP::base
 {
 	Employee::Employee(const std::string& name, const std::string& position, salary_t salary) :
 		name(name), position(position), salary(salary) {}
@@ -37,4 +37,4 @@ namespace SERP
 		if (i == -1) return "";
 		return name.substr(i + 1, name.length() - i - 1);
 	}
-} // namespace SERP
+} // namespace SERP::base

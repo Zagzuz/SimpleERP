@@ -1,7 +1,7 @@
 #include "stateful.h"
 
 
-namespace SERP
+namespace SERP::base
 {
 	Stateful::Stateful(std::size_t state_capacity) : state_cap_(state_capacity)
 	{
@@ -64,4 +64,4 @@ namespace SERP
 		return state_cap_;
 	}
 
-} // namespace SERP
+} // namespace SERP::base

@@ -1,10 +1,10 @@
-#ifndef EMPLOYEE_H
-#define EMPLOYEE_H
+#ifndef BASE_EMPLOYEE_H
+#define BASE_EMPLOYEE_H
 
 #include <string>
 
 
-namespace SERP
+namespace SERP::base
 {
 	struct Employee
 	{
@@ -24,6 +24,6 @@ namespace SERP
 		std::string position;
 		salary_t salary;
 	};
-} // namespace SERP
+} // namespace SERP::base
 
-#endif // EMPLOYEE_H
+#endif // BASE_EMPLOYEE_H

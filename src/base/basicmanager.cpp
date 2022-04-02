@@ -1,7 +1,7 @@
 #include "basicmanager.h"
 
 
-namespace SERP
+namespace SERP::base
 {
 	void BasicManager::create_division(const std::string& name)
 	{
@@ -132,4 +132,4 @@ namespace SERP
 		if (it == div_it->employees.end()) return DivEmpIt::invalid();
 		return { div_it, it };
 	}
-} // namespace SERP
+} // namespace SERP::base

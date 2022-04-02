@@ -1,11 +1,11 @@
-#ifndef STATEFUL_H
-#define STATEFUL_H
+#ifndef BASE_STATEFUL_H
+#define BASE_STATEFUL_H
 
 #include <string>
 #include <deque>
 
 
-namespace SERP
+namespace SERP::base
 {
 	class Stateful
 	{
@@ -24,6 +24,6 @@ namespace SERP
 	private:
 		std::size_t state_cap_;
 	};
-} // namespace SERP
+} // namespace SERP::base
 
-#endif // STATEFUL_H
+#endif // BASE_STATEFUL_H

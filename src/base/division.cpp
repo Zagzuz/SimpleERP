@@ -1,7 +1,7 @@
 #include "division.h"
 
 
-namespace SERP
+namespace SERP::base
 {
 	Division::Division(const std::string& name) : name(name) {}
 
@@ -17,4 +17,4 @@ namespace SERP
 		n_employees = employees.size();
 	}
 
-} // namespace SERP
+} // namespace SERP::base

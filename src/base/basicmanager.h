@@ -1,5 +1,5 @@
-#ifndef	BASICMANAGER_H
-#define BASICMANAGER_H
+#ifndef	BASE_BASICMANAGER_H
+#define BASE_BASICMANAGER_H
 
 #include <string>
 #include <algorithm>
@@ -14,7 +14,7 @@
 #include "division.h"
 
 
-namespace SERP
+namespace SERP::base
 {
 	class BasicManager
 	{
@@ -70,6 +70,6 @@ namespace SERP
 			}
 		);
 	}
-} // namespace SERP
+} // namespace SERP::base
 
-#endif // BASICMANAGER_H
+#endif // BASE_BASICMANAGER_H

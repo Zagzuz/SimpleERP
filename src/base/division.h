@@ -1,5 +1,5 @@
-#ifndef DIVISION_H
-#define DIVISION_H
+#ifndef BASE_DIVISION_H
+#define BASE_DIVISION_H
 
 #include <string>
 #include <string_view>
@@ -15,7 +15,7 @@
 using boost::multi_index_container;
 using namespace boost::multi_index;
 
-namespace SERP
+namespace SERP::base
 {
 	struct Division
 	{
@@ -33,6 +33,6 @@ namespace SERP
 		using emp_container_t = multi_index_container<Employee, indexed_by<hashed_unique<member_t>>>;
 		emp_container_t employees;
 	};
-} // namespace SERP
+} // namespace SERP::base
 
-#endif // DIVISION_H
+#endif // BASE_DIVISION_H

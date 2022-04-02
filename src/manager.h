@@ -5,15 +5,16 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
-#include "basicmanager.h"
-#include "stateful.h"
+#include "base/basicmanager.h"
+#include "base/stateful.h"
+#include "gui/treeview.h"
 
 
 namespace pt = boost::property_tree;
 
 namespace SERP
 {
-	class Manager : public BasicManager, public Stateful
+	class Manager : public base::BasicManager, public base::Stateful
 	{
 	public:
 		Manager(std::size_t state_capacity = 10);
