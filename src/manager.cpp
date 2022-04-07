@@ -58,6 +58,29 @@ namespace SERP
         divisions_.clear();
     }
 
+    void Manager::show()
+    {
+        unsigned w = 800, h = 600;
+        nana::form fm(nana::API::make_center(w, h));
+        nana::API::track_window_size(fm, { w, h }, true);
+        nana::API::track_window_size(fm, { 300, 400 }, false);
+        fm.caption("SimpleERP");
+        nana::place layout(fm);
+        layout.div("<fit tree>");
+        nana::treebox tree(fm);
+        auto node = tree.insert("Departments", "Departments");
+        for (auto& div : divisions_)
+        {
+            auto div_node = node.append(div.name, div.name);
+            for (auto& emp : div.employees)
+                div_node.append(emp.name, emp.name);
+        }
+        layout["tree"] << tree;
+        layout.collocate();
+        fm.show();
+        nana::exec();
+    }
+
     void Manager::load_tree(const pt::ptree& t)
     {
         for (auto& dep : t.get_child("departments"))

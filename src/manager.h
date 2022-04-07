@@ -7,14 +7,14 @@
 
 #include "base/basicmanager.h"
 #include "base/stateful.h"
-#include "gui/treeview.h"
+#include "gui/windowview.h"
 
 
 namespace pt = boost::property_tree;
 
 namespace SERP
 {
-	class Manager : public base::BasicManager, public base::Stateful
+	class Manager : public base::BasicManager, public base::Stateful, public gui::WindowView
 	{
 	public:
 		Manager(std::size_t state_capacity = 10);
@@ -23,6 +23,7 @@ namespace SERP
 		void save(const std::string& filename, std::size_t indent_count = 3);
 		void save_state() override;
 		void dissolve_divisions();
+		virtual void show();
 	protected:
 		void load_state(std::size_t index) override;
 	private:
