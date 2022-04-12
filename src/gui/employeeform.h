@@ -20,11 +20,12 @@ namespace SERP::gui
 	{
 	public:
 		EmployeeForm(nana::window wd, UpdateHandler& uhandler);
-		virtual void build() override;
+		virtual void font(const nana::paint::font& f) override;
 		virtual void save_changes(ObjT& emp) override;
 		virtual void source_object(const ObjT& emp) override;
 		using Form<ObjT>::source_object;
 	protected:
+		virtual void build() override;
 		virtual void init_events() override;
 	private:
 		nana::label fname_{ *this };

@@ -64,23 +64,25 @@ namespace SERP
     {
         if (upd == gui::Update::DivisionUpdate)
         {
-            const std::string& div_name = dform_.source_object().name;
+            const std::string div_name = dform_.source_object().name;
             divisions_.modify(divisions_.find(div_name),
                 [this](base::Division& div) {
                     dform_.save_changes(div);
                 }
             );
             layout_.field_display("dform", false);
-            tree_.rebuild();
+            tree_.replace_division(div_name, dform_.source_object().name);
             return true;
         }
         if (upd == gui::Update::EmployeeUpdate)
         {
             const std::string& div_name = eform_.source_object().division_->name;
-            const std::string& emp_name = eform_.source_object().name;
-            divisions_.modify(divisions_.find(div_name),
-                [this, &emp_name](base::Division& div) {
-                    div.employees.modify(div.employees.find(emp_name),
+            const std::string emp_name = eform_.source_object().name;
+            auto div_it = divisions_.find(div_name);
+            auto emp_it = div_it->employees.find(emp_name);
+            divisions_.modify(div_it,
+                [this, &emp_it](base::Division& div) {
+                    div.employees.modify(emp_it,
                         [this](base::Employee& emp) {
                             eform_.save_changes(emp);
                         }
@@ -88,7 +90,7 @@ namespace SERP
                 }
             );
             layout_.field_display("eform", false);
-            tree_.rebuild();
+            tree_.replace_employee(emp_name, div_name, eform_.source_object().name);
             return true;
         }
         if (upd == gui::Update::ShowDivisionForm)
@@ -114,8 +116,6 @@ namespace SERP
     {
         tree_.source_object(divisions_);
         tree_.build();
-        dform_.build();
-        eform_.build();
         layout_["tree"] << tree_;
         layout_["dform"] << dform_;
         layout_["eform"] << eform_;

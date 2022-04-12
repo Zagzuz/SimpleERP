@@ -13,7 +13,7 @@ namespace SERP::gui
 	public:
 		using ObjT = T;
 		Elem(UpdateHandler& uhandler);
-		void font(const nana::paint::font& f);
+		virtual void font(const nana::paint::font& f);
 		const nana::paint::font& font() const;
 		virtual void source_object(const T& obj);
 		const T& source_object() const;

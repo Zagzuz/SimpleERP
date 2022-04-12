@@ -1,4 +1,4 @@
-#include "employeeform.h"
+﻿#include "employeeform.h"
 
 
 namespace SERP::gui
@@ -7,6 +7,23 @@ namespace SERP::gui
 		Form<ObjT>(wd, uhandler)
 	{
 		init_events();
+		build();
+	}
+
+	void EmployeeForm::font(const nana::paint::font& f)
+	{
+		f_ = f;
+		fname_.typeface(f_);
+		mname_.typeface(f_);
+		lname_.typeface(f_);
+		pos_.typeface(f_);
+		salary_.typeface(f_);
+		fname_value_.typeface(f_);
+		mname_value_.typeface(f_);
+		pos_value_.typeface(f_);
+		lname_value_.typeface(f_);
+		salary_value_.typeface(f_);
+		save_.typeface(f_);
 	}
 
 	void EmployeeForm::source_object(const ObjT& emp)
@@ -28,67 +45,56 @@ namespace SERP::gui
 	{
 		layout_.div(
 			"<vert margin=10% weight=60% <><>"
+			"<<lname_lbl> <lnameval_txt>> <>"
 			"<<fname_lbl> <fnameval_txt>> <>"
 			"<<mname_lbl> <mnameval_txt>> <>"
-			"<<lname_lbl> <lnameval_txt>> <>"
-			"<<pos_lbl> <posval_txt>> <>"
-			"<<sal_lbl> <salval_txt>> <>"
+			"<<pos_lbl>   <posval_txt>  > <>"
+			"<<sal_lbl>   <salval_txt>  > <>"
 			"<save_btn>"
 			"<><> >"
 		);
 
-		fname_.caption("First name: ");
-		fname_.typeface(f_);
+		fname_.caption(L"Имя: ");
 		fname_.text_align(nana::align::right, nana::align_v::center);
 		layout_["fname_lbl"] << fname_;
 
-		mname_.caption("Middle name: ");
-		mname_.typeface(f_);
+		mname_.caption(L"Отчество: ");
 		mname_.text_align(nana::align::right, nana::align_v::center);
 		layout_["mname_lbl"] << mname_;
 
-		lname_.caption("Last name: ");
-		lname_.typeface(f_);
+		lname_.caption(L"Фамилия: ");
 		lname_.text_align(nana::align::right, nana::align_v::center);
 		layout_["lname_lbl"] << lname_;
 
-		pos_.caption("Position: ");
-		pos_.typeface(f_);
+		pos_.caption(L"Позиция: ");
 		pos_.text_align(nana::align::right, nana::align_v::center);
 		layout_["pos_lbl"] << pos_;
 
-		salary_.caption("Salary: ");
+		salary_.caption(L"Оклад: ");
 		salary_.text_align(nana::align::right, nana::align_v::center);
-		salary_.typeface(f_);
 		layout_["sal_lbl"] << salary_;
 
 		fname_value_.multi_lines(false);
 		fname_value_.text_align(nana::align::left);
-		fname_value_.typeface(f_);
 		layout_["fnameval_txt"] << fname_value_;
 
 		mname_value_.multi_lines(false);
 		mname_value_.text_align(nana::align::left);
-		mname_value_.typeface(f_);
 		layout_["mnameval_txt"] << mname_value_;
 
 		lname_value_.multi_lines(false);
 		lname_value_.text_align(nana::align::left);
-		lname_value_.typeface(f_);
 		layout_["lnameval_txt"] << lname_value_;
 
 		pos_value_.multi_lines(false);
 		pos_value_.text_align(nana::align::left);
-		pos_value_.typeface(f_);
 		layout_["posval_txt"] << pos_value_;
 
 		salary_value_.multi_lines(false);
 		salary_value_.text_align(nana::align::left);
-		salary_value_.typeface(f_);
 		layout_["salval_txt"] << salary_value_;
 
-		save_.caption("Save changes");
-		save_.typeface(f_);
+		save_.caption(L"Сохранить изменения");
 		layout_["save_btn"] << save_;
 
 		layout_.collocate();

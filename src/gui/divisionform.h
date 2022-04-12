@@ -19,11 +19,12 @@ namespace SERP::gui
 	{
 	public:
 		DivisionForm(nana::window wd, UpdateHandler& uhandler);
+		virtual void font(const nana::paint::font& f) override;
 		virtual void source_object(const ObjT& div) override;
-		virtual void build() override;
 		virtual void save_changes(ObjT& div) override;
 		using Form<ObjT>::source_object;
 	protected:
+		virtual void build() override;
 		virtual void init_events() override;
 	private:
 		nana::label name_{ *this };
