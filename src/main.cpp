@@ -5,6 +5,7 @@
 
 int main(int* argc, char** argv)
 {
+	std::cout.imbue(std::locale("ru_RU.UTF8"));
 	SERP::Manager tm;
 	tm.load("data.xml");
 	tm.save_state();
@@ -15,7 +16,7 @@ int main(int* argc, char** argv)
 	tm.save("new_data2.xml");
 	tm.redo();
 	tm.save("new_data1.xml");
-	tm.show();
-
+	tm.window_show();
+	tm.save("new_data1.xml");
 	return 0;
 }

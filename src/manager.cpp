@@ -3,7 +3,9 @@
 
 namespace SERP
 {
-    Manager::Manager(std::size_t new_capacity) : Stateful(new_capacity) {}
+    Manager::Manager(std::size_t new_capacity) :
+        Stateful(new_capacity),
+        gui::WindowView() {}
 
     void Manager::add(const std::string& filename)
     {
@@ -58,26 +60,69 @@ namespace SERP
         divisions_.clear();
     }
 
-    void Manager::show()
+    bool Manager::handle_update(gui::Update upd)
     {
-        unsigned w = 800, h = 600;
-        nana::form fm(nana::API::make_center(w, h));
-        nana::API::track_window_size(fm, { w, h }, true);
-        nana::API::track_window_size(fm, { 300, 400 }, false);
-        fm.caption("SimpleERP");
-        nana::place layout(fm);
-        layout.div("<fit tree>");
-        nana::treebox tree(fm);
-        auto node = tree.insert("Departments", "Departments");
-        for (auto& div : divisions_)
+        if (upd == gui::Update::DivisionUpdate)
         {
-            auto div_node = node.append(div.name, div.name);
-            for (auto& emp : div.employees)
-                div_node.append(emp.name, emp.name);
+            const std::string& div_name = dform_.source_object().name;
+            divisions_.modify(divisions_.find(div_name),
+                [this](base::Division& div) {
+                    dform_.save_changes(div);
+                }
+            );
+            layout_.field_display("dform", false);
+            tree_.rebuild();
+            return true;
         }
-        layout["tree"] << tree;
-        layout.collocate();
-        fm.show();
+        if (upd == gui::Update::EmployeeUpdate)
+        {
+            const std::string& div_name = eform_.source_object().division_->name;
+            const std::string& emp_name = eform_.source_object().name;
+            divisions_.modify(divisions_.find(div_name),
+                [this, &emp_name](base::Division& div) {
+                    div.employees.modify(div.employees.find(emp_name),
+                        [this](base::Employee& emp) {
+                            eform_.save_changes(emp);
+                        }
+                    );
+                }
+            );
+            layout_.field_display("eform", false);
+            tree_.rebuild();
+            return true;
+        }
+        if (upd == gui::Update::ShowDivisionForm)
+        {
+            dform_.source_object(*tree_.selected().value<const base::Division*>());
+            layout_.field_display("eform", false);
+            layout_.field_display("dform", true);
+            layout_.collocate();
+            return true;
+        }
+        if (upd == gui::Update::ShowEmployeeForm)
+        {
+            eform_.source_object(*tree_.selected().value<const base::Employee*>());
+            layout_.field_display("dform", false);
+            layout_.field_display("eform", true);
+            layout_.collocate();
+            return true;
+        }
+        return false;
+    }
+
+    void Manager::window_show()
+    {
+        tree_.set_divisions(divisions_);
+        tree_.build();
+        dform_.build();
+        eform_.build();
+        layout_["tree"] << tree_;
+        layout_["dform"] << dform_;
+        layout_["eform"] << eform_;
+        layout_.field_display("dform", false);
+        layout_.field_display("eform", false);
+        layout_.collocate();
+        show();
         nana::exec();
     }
 
@@ -86,7 +131,7 @@ namespace SERP
         for (auto& dep : t.get_child("departments"))
         {
             auto div_name = dep.second.get<std::string>("<xmlattr>.name");
-            create_division(div_name);
+            const base::Division& div = create_division(div_name);
             for (auto& emp : dep.second.get_child("employments"))
             {
                 base::Employee e(

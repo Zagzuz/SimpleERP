@@ -3,8 +3,12 @@
 
 namespace SERP::base
 {
-	Employee::Employee(const std::string& name, const std::string& position, salary_t salary) :
-		name(name), position(position), salary(salary) {}
+	Employee::Employee(const std::string& name, 
+		const std::string& position, 
+		salary_t salary) :
+		name(name), 
+		position(position), 
+		salary(salary) {}
 
 	Employee::Employee(const std::string& first_name, 
 		const std::string& middle_name, 
@@ -36,5 +40,11 @@ namespace SERP::base
 		std::size_t i = name.find_last_of(' ');
 		if (i == -1) return "";
 		return name.substr(i + 1, name.length() - i - 1);
+	}
+
+	std::string Employee::full_name(const std::string& first_name, 
+		const std::string& middle_name, const std::string& last_name)
+	{
+		return first_name + " " + middle_name + " " + last_name;
 	}
 } // namespace SERP::base

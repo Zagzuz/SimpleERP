@@ -3,9 +3,15 @@
 
 namespace SERP::base
 {
-	void BasicManager::create_division(const std::string& name)
+	const Division& BasicManager::create_division(const std::string& name)
 	{
-		divisions_.emplace(name);
+		auto [it, b] = divisions_.emplace(name);
+		if (!b)
+		{
+			throw std::runtime_error("divisions_.emplace() "
+				"failed in BasicManager::create_division()");
+		}
+		return *it;
 	}
 
 	void BasicManager::delete_division(const std::string& name)
@@ -13,7 +19,20 @@ namespace SERP::base
 		divisions_.erase(name);
 	}
 	
-	void BasicManager::add_employee(const std::string& division_name, const Employee& e)
+	void BasicManager::rename_division(const std::string& name, const std::string& new_name)
+	{
+		auto it = divisions_.find(name);
+		if (it == divisions_.end())
+		{
+			// division not found
+			return;
+		}
+		divisions_.modify_key(it,
+			[&new_name](std::string& key) { key = new_name; }
+		);
+	}
+
+	void BasicManager::add_employee(const std::string& division_name, Employee e)
 	{
 		auto div_it = divisions_.find(division_name);
 		if (div_it == divisions_.end())
@@ -21,9 +40,10 @@ namespace SERP::base
 			// division not found
 			return;
 		}
+		e.division_ = &*div_it;
 		divisions_.modify(div_it,
 			[&e](Division& d) {
-				d.employees.insert(e);
+				d.employees.insert(std::move(e));
 				d.count_employees();
 				d.calculate_avg_salary();
 			}
