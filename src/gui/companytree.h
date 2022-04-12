@@ -1,7 +1,7 @@
 #ifndef	GUI_COMPANYTREE_H
 #define	GUI_COMPANYTREE_H
 
-#include "updatehandler.h"
+#include "elem.h"
 #include "../base/basicmanager.h"
 
 #include <nana/gui/widgets/treebox.hpp>
@@ -9,19 +9,16 @@
 
 namespace SERP::gui
 {
-	class CompanyTree : public nana::treebox
+	class CompanyTree : public nana::treebox, 
+		public Elem<base::BasicManager::div_container_t>
 	{
 	public:
 		CompanyTree(nana::window wd, UpdateHandler& uhandler);
-		void set_divisions(base::BasicManager::div_container_t& divisions);
-		void set_font(nana::paint::font f);
-		void build();
+		virtual void build() override;
+		virtual void save_changes(ObjT& obj) override;
 		void rebuild();
-	private:
-		void init_events();
-		nana::paint::font f_{};
-		base::BasicManager::div_container_t* divisions_ = nullptr;
-		UpdateHandler* uhandler_ = nullptr;
+	protected:
+		virtual void init_events() override;
 	};
 } // namespace SERP::gui
 

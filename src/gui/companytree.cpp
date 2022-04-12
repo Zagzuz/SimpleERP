@@ -1,31 +1,22 @@
 #include "companytree.h"
+#include "companytree.h"
 
 
 namespace SERP::gui
 {
 	CompanyTree::CompanyTree(nana::window wd, UpdateHandler& uhandler) :
-		nana::treebox(wd), uhandler_(&uhandler)
+		nana::treebox(wd), Elem<ObjT>(uhandler)
 	{
 		init_events();
 	}
 
-	void CompanyTree::set_divisions(base::BasicManager::div_container_t& divisions)
-	{
-		divisions_ = &divisions;
-	}
-
-	void CompanyTree::set_font(nana::paint::font f)
-	{
-		f_ = f;
-	}
-
 	void CompanyTree::build()
 	{
-		if (!divisions_) return;
+		if (!obj_) return;
 		typeface(f_);
 		auto node = insert("Departments", "Departments");
-		node.value(&divisions_);
-		for (auto& div : *divisions_)
+		node.value(&obj_);
+		for (auto& div : *obj_)
 		{
 			auto div_node = node.append(div.name, div.name, &div);
 			for (const base::Employee& emp : div.employees)
@@ -35,9 +26,13 @@ namespace SERP::gui
 		}
 	}
 
+	void CompanyTree::save_changes(ObjT& obj)
+	{
+	}
+
 	void CompanyTree::rebuild()
 	{
-		if (!divisions_) return;
+		if (!obj_) return;
 		erase("Departments");
 		build();
 	}

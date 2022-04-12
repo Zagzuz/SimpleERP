@@ -112,7 +112,7 @@ namespace SERP
 
     void Manager::window_show()
     {
-        tree_.set_divisions(divisions_);
+        tree_.source_object(divisions_);
         tree_.build();
         dform_.build();
         eform_.build();

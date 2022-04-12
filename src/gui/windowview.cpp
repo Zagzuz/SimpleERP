@@ -17,7 +17,7 @@ namespace SERP::gui
 		layout_.div("<<min=20% tree> | 60% <switchable min=50% <dform><eform>>>");
 		dform_.font(normal_);
 		eform_.font(normal_);
-		tree_.set_font(normal_);
+		tree_.font(normal_);
 	}
 
 	void WindowView::window_show()

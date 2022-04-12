@@ -15,18 +15,18 @@ namespace SERP::base
 		const std::string& last_name, 
 		const std::string& position, 
 		salary_t salary) :
-		name(first_name + ' ' + middle_name + ' ' + last_name),
+		name(full_name(first_name, middle_name, last_name)),
 		position(position),
 		salary(salary) {}
 	
-	std::string Employee::first_name() const
+	std::string Employee::last_name() const
 	{
 		std::size_t i = name.find(' ');
 		if (i == -1) return name;
 		return name.substr(0, i);
 	}
 
-	std::string Employee::middle_name() const
+	std::string Employee::first_name() const
 	{
 		std::size_t i = name.find(' ');
 		if (i == -1) return "";
@@ -35,7 +35,7 @@ namespace SERP::base
 		return name.substr(i + 1, j - i - 1);
 	}
 
-	std::string Employee::last_name() const
+	std::string Employee::middle_name() const
 	{
 		std::size_t i = name.find_last_of(' ');
 		if (i == -1) return "";
@@ -45,6 +45,6 @@ namespace SERP::base
 	std::string Employee::full_name(const std::string& first_name, 
 		const std::string& middle_name, const std::string& last_name)
 	{
-		return first_name + " " + middle_name + " " + last_name;
+		return last_name + " " + first_name + " " + middle_name;
 	}
 } // namespace SERP::base
